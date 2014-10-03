@@ -15,6 +15,7 @@ public class Autosaver {
 	const string IntervalPref = "AutoSaveInterval";
 	const string ShowMessagePref = "ShowMessage";
 	const string EnableAutosavePref = "EnableAutosave";
+	const int interval = 60000;
 
 	public static int Interval {
 		get {
@@ -23,7 +24,7 @@ public class Autosaver {
 		set {
 			if (PlayerPrefs.GetInt(IntervalPref) != value)
 			{
-				tim.Interval = value * 5000;
+				tim.Interval = value * interval;
 				// save options
 				PlayerPrefs.SetInt(IntervalPref, value);
 				PlayerPrefs.Save();
@@ -79,7 +80,7 @@ public class Autosaver {
 		Threader.Enable ();
 
 		tim = new Timer ();
-		tim.Interval = Interval * 5000;
+		tim.Interval = Interval * interval;
 		tim.Elapsed += (object sender, ElapsedEventArgs e) => {
 
 			Threader.RunOnMain (() => {
