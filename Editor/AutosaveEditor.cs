@@ -18,7 +18,7 @@ public class AutoSaveEditor : EditorWindow {
 		Autosaver.AutoSave = EditorGUILayout.Toggle ("Auto save: ", Autosaver.AutoSave);
 		Autosaver.ShowMessage = EditorGUILayout.BeginToggleGroup ("Show Message: ", Autosaver.ShowMessage);
 
-		EditorGUILayout.LabelField ("Last save:", Autosaver.LastSave.ToString(), GUILayout.ExpandWidth(true), GUILayout.MinWidth(300));
+		EditorGUILayout.LabelField ("Last save:", Autosaver.LastSave, GUILayout.ExpandWidth(true), GUILayout.MinWidth(300));
 		EditorGUILayout.EndVertical ();
 	}
 }

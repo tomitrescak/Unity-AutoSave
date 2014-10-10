@@ -10,7 +10,6 @@ public class Autosaver {
 	static Timer tim;
 	static bool showMessage;
 	static bool autosave;
-	static DateTime lastSave;
 
 	const string IntervalPref = "AutoSaveInterval";
 	const string ShowMessagePref = "ShowMessage";
@@ -61,7 +60,13 @@ public class Autosaver {
 		}
 	}
 
-	public static DateTime LastSave { get; set; }
+	public static string LastSave { 
+		get { return PlayerPrefs.GetString ("LastSave"); }
+		set { 
+			PlayerPrefs.SetString("LastSave", value); 
+			PlayerPrefs.Save();
+		} 
+	}
 
 	static Autosaver() {
 
@@ -84,20 +89,18 @@ public class Autosaver {
 		tim.Elapsed += (object sender, ElapsedEventArgs e) => {
 
 			Threader.RunOnMain (() => {
-				var scenePath = EditorApplication.currentScene;
-
-				// save scene
-				EditorApplication.SaveScene (scenePath);
-
-				// save assets
-				AssetDatabase.SaveAssets();
-
-				LastSave = DateTime.Now;
-
-				if(ShowMessage){
-					Debug.Log ("AutoSave saved: " + scenePath + " on " + DateTime.Now.ToString ());
-				}
+				SaveProject();
 			});
+		};
+
+		EditorApplication.playmodeStateChanged = () =>
+		{
+			
+			if( EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isPlaying )
+			{
+				SaveProject();
+			}
+			
 		};
 
 
@@ -105,14 +108,31 @@ public class Autosaver {
 
 	}
 
-	static void ToggleAutoSave() {
+	static void SaveProject() {
+		var scenePath = EditorApplication.currentScene;
+		
+		// save scene
+		EditorApplication.SaveScene (scenePath);
+		
+		// save assets
+		EditorApplication.SaveAssets();
+
+		// remember last save
+		LastSave = DateTime.Now.ToString();
+		
+		if(ShowMessage){
+			Debug.Log ("AutoSave saved: " + scenePath + " on " + DateTime.Now.ToLocalTime());
+		}
+	}
+
+	static void ToggleAutoSave() { 
 		tim.Enabled = AutoSave;
 
 
-		if (ShowMessage) {
-			if (AutoSave) { Debug.Log ("Autosaver started"); }
-			else { Debug.Log ("Autosaver stopped"); }
-		}
+//		if (ShowMessage) {
+//			if (AutoSave) { Debug.Log ("Autosaver started"); }
+//			else { Debug.Log ("Autosaver stopped"); }
+//		}
 	}
 }
 

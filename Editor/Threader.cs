@@ -9,10 +9,6 @@ public class Threader
 	static ICollection<Action> m_currentActions = new List<Action>();
 	static object m_lock;
 
-	static Threader() {
-		Debug.Log ("Instance created " );
-	}
-	
 	public static void Enable()
 	{
 		m_lock = new object();
